@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            backdrop-filter: blur(5px);
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://hub88.imgix.net/pgsoft/bg/pgs_fortunerabbit.png?auto=compress,format&w=1130&h=634'); /* Adicione o link da imagem de fundo aqui */
+        }
+
+        #container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 90%;
+        }
+
+        #container img {
+    max-width: 30%;
+    height: auto;
+    transition: transform 0.5s; /* Adiciona uma animação suave ao transformar a imagem */
+}
+
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        #loader {
+            width: 60%;
+            height: 20px;
+            background-color: #f1f1f1;
+            position: relative;
+            display: none;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #progress {
+            width: 30%;
+            height: 100%;
+            background-color: #6a1da1;
+            border-radius: 4px;
+        }
+
+        #loader-text {
+            position: absolute;
+            color: #fff;
+            font-size: 14px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #button {
+    width: -30%;  /* Defina a largura desejada aqui */
+    height: -10%;  /* Defina a altura desejada aqui */
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+        @keyframes fall {
+    0% { top: -10%; }
+    100% { top: 110%; }
+}
+        #button img {
+            width: 50%;   /* Faz a imagem preencher o botão completamente */
+            height: auto;
+            transition: transform 0.1s;  /* Mantém a proporção da imagem */
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(1turn); }
+        }
+
+        .falling-leaf {
+            position: fixed;
+            max-width: 50px;
+            animation: 
+                fall linear infinite both,
+                spin linear infinite both;
+}
+        #static-image {
+            display: block;
+            margin: 0 auto;
+            width: 70%; /* Define a largura da imagem como 50% da largura da tela */
+            height: auto; /* A altura será ajustada automaticamente para manter as proporções da imagem */
+        }
+        #button:active {
+    transform: scale(0.9);
+}
+.clicked {
+    animation: scaleDown 0.2s forwards;
+}
+
+@keyframes scaleDown {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+
+    </style>
+</head>
+<body>
+    <div id="falling-leaves"></div>
+    <img id="static-image" src="https://i.ibb.co/yPt8pHC/1c66cd3b-e9e6-417a-a59e-74124af6ebc5.png" alt="Descrição da imagem">
+
+    <div id="container">
+        <img id="image1" src="https://www.pgsoft.com/uploads/Games/Images/942a8ad7-2501-41dd-9b03-d0cad60b9699.png" alt="Imagem Esquerda">
+        <img id="image2" src="https://www.pgsoft.com/uploads/Games/Images/942a8ad7-2501-41dd-9b03-d0cad60b9699.png" alt="Imagem Centro">
+        <img id="image3" src="https://www.pgsoft.com/uploads/Games/Images/942a8ad7-2501-41dd-9b03-d0cad60b9699.png" alt="Imagem Direita">
+    </div>
+    <p style="color: rgb(43, 43, 43);"><b>Clique para gerar uma nova entrada:</b></p>
+    <div id="loader">
+        <div id="progress"></div>
+        <span id="loader-text">Analisando...</span>
+    </div>
+    <button id="button" onclick="startAnimation()">
+        <img src="https://i.ibb.co/HzvRhhF/004by.png" alt="Botão">
+    </button>
+
+    <script>
+function startAnimation() {
+    var button = document.getElementById("button");
+    button.disabled = true;
+    var loader = document.getElementById("loader");
+    loader.style.display = "block";
+    var progress = document.getElementById("progress");
+
+    var images = [document.getElementById("image1"), document.getElementById("image2"), document.getElementById("image3")];
+    var imagesToDisplay = ["https://i.ibb.co/RgsYcvP/002.png", "https://i.ibb.co/zf8H2zy/003.png", "https://i.ibb.co/x32x1Xb/001.png"];
+
+    var duration = 5000; // Duração da animação em milissegundos (5 segundos)
+    var startTime = performance.now();
+
+    function updateProgress() {
+        var elapsedTime = performance.now() - startTime;
+        var percentage = (elapsedTime / duration) * 100;
+        progress.style.width = percentage + "%";
+
+        if (percentage < 100) {
+            requestAnimationFrame(updateProgress);
+        }
+    }
+
+    updateProgress();
+
+    function changeImages() {
+        images.forEach(function (image, index) {
+            // Primeiro, vira a imagem para trás
+            image.style.transform = "rotateY(90deg)";
+            
+            setTimeout(function () {
+                // Quando a imagem está virada para trás, troca a imagem de fonte
+                image.src = imagesToDisplay[index];
+                
+                // E desfaz a rotação para revelar a nova imagem
+                image.style.transform = "rotateY(0deg)";
+            }, 500); // Ajusta o tempo para coincidir com a duração da animação do CSS
+        });
+    }
+
+    function stopAnimation() {
+        loader.style.display = "none";
+        button.disabled = false;
+        progress.style.width = "0%";
+    }
+
+    setTimeout(function () {
+        changeImages();
+        stopAnimation();
+    }, duration);
+}
+
+        setInterval(function () {
+            var images = [document.getElementById("image1"), document.getElementById("image2"), document.getElementById("image3")];
+            images.forEach(function (image) {
+                image.src = originalLink;
+            });
+        }, 120000); // 2 minutos em milissegundos
+        function addFallingLeaf() {
+    // Crie a imagem
+    var leaf = document.createElement("img");
+    leaf.src = "https://sptpgslot.com/wp-content/uploads/2022/04/coins.png.webp"; // Coloque o link da sua imagem aqui
+    leaf.className = "falling-leaf";
+
+    // Dê à imagem uma posição aleatória horizontalmente
+    leaf.style.left = Math.random() * 100 + "%";
+
+    // Dê à animação uma duração aleatória entre 2 e 10 segundos
+    var fallDuration = Math.random() * 8 + 2;
+    leaf.style.animationDuration = `${fallDuration}s, ${fallDuration}s`;
+
+    // Adicione a imagem à página
+    document.getElementById("falling-leaves").appendChild(leaf);
+
+    // Remova a imagem depois que a animação terminar
+    setTimeout(function() {
+        leaf.remove();
+    }, fallDuration * 1000);
+}
+
+// Adicione uma nova imagem a cada 500 milissegundos
+setInterval(addFallingLeaf, 500);
+document.getElementById('button').addEventListener('click', function() {
+    this.classList.add('clicked');
+});
+
+    </script>
+</body>
+</html>
